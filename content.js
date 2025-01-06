@@ -1,11 +1,13 @@
+const windowURL = window.location.href;
+let windowParts = windowURL.split("/");
+let assignmentID = windowParts[windowParts.length - 3];
+
 async function createPopup() {
   const link = document.createElement("link");
   link.rel = "stylesheet";
   link.href =
     "https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css";
   document.head.appendChild(link);
-
-  windowURL = window.location.href;
 
   const popup = document.createElement("div");
   popup.style.backgroundColor = "white";
@@ -52,7 +54,7 @@ async function createPopup() {
 
   pack.addEventListener("click", () => {
     pack.remove();
-    animation(popup, windowURL);
+    animation(popup);
   });
   popup.appendChild(pack);
   document.body.appendChild(popup);
@@ -121,7 +123,8 @@ async function animate(element, animationClass, duration = 0) {
   });
 }
 
-async function animation(popup, window) {
+async function animation(popup) {
+
   const header = document.querySelector(".mobile-header-title");
   let course = header.childNodes[1].innerHTML;
   if (course.length > 20) {
@@ -132,8 +135,9 @@ async function animation(popup, window) {
     course = course.substring(0, strlength) + "...";
   }
 
-  let assignment = document.querySelector(".submission-details-header__heading.h3").innerHTML;
-  console.log(assignment);
+  let assignment = document.querySelector(
+    ".submission-details-header__heading.h3"
+  ).innerHTML;
 
   if (assignment.length > 20) {
     let strlength = 20;
@@ -361,6 +365,7 @@ async function animation(popup, window) {
   card.style.display = "flex";
   card.style.visibility = "visible";
   await animate(card, "animate__fadeIn", 4);
+
 }
 
 function getRGB(imgEl) {
@@ -410,4 +415,11 @@ function getRGB(imgEl) {
   return rgb;
 }
 
-createPopup();
+chrome.storage.local.get("assignmentIDs", (data) => {
+  let storedIDs = data.assignmentIDs || [];
+  if (!storedIDs.includes(assignmentID)) {
+    createPopup();
+    storedIDs.push(assignmentID);
+    chrome.storage.local.set({ assignmentIDs: storedIDs });
+  }
+});

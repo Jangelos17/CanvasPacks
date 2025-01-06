@@ -3,11 +3,6 @@
   "version": "1.0",
   "manifest_version": 3,
   "description": "Become an academic legend by opening your grades like your favorite FIFA pack",
-  "permissions": ["activeTab", "scripting"],
-  "host_permissions": [
-    "https://canvas.wisc.edu/*",
-    "https://*.instructure.com/*"
-  ],
   "content_scripts": [
     {
       "matches": [
@@ -22,5 +17,6 @@
       "resources": ["assets/*"],
       "matches": ["https://canvas.wisc.edu/*", "https://*.instructure.com/*"]
     }
-  ]
+  ],
+  "permissions": ["storage"]
 }
